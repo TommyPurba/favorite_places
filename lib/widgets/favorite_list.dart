@@ -1,3 +1,4 @@
+import 'package:favorite_places/screen/placedetailscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:favorite_places/models/place.dart';
 
@@ -8,11 +9,20 @@ class FavoriteList extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemBuilder: (ctx, index) {
-        
-      } ,
-    );
+
+      Widget mainContent = Center(
+        child: Text('No places added yet!', 
+        style: TextStyle(
+          color: Theme.of(context).colorScheme.primary
+        ),),
+      );
+
+        if(favorite.isNotEmpty){
+          mainContent = ListView.builder(
+            itemBuilder: (ctx, index) => Placedetailscreen(place: favorite[index].id) ,
+          );
+        }
+    return mainContent;
 
   }
 }

@@ -1,5 +1,6 @@
 
 import 'package:favorite_places/screen/addnewplacescreen.dart';
+import 'package:favorite_places/widgets/favorite_list.dart';
 import 'package:flutter/material.dart';
 
 class YourfavoriteScreen extends StatefulWidget{
@@ -30,7 +31,7 @@ class _YourfavoriteScreenState extends State<YourfavoriteScreen>{
         ],
         backgroundColor: Theme.of(context).colorScheme.onSecondary,
       ),
-      body:ListView(),
+      body:FavoriteList(favorite: []),
     );
   }
 }
