@@ -7,8 +7,8 @@ const uuid = Uuid();
 class Favorite{
   Favorite({
    required this.title,
-   required this.map,
-   required this.img,
+    this.map = '',
+    this.img = '',
   }): id = uuid.v4();
 
   final String id;
