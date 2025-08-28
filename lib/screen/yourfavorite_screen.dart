@@ -31,7 +31,7 @@ class _YourfavoriteScreenState extends State<YourfavoriteScreen>{
         ],
         backgroundColor: Theme.of(context).colorScheme.onSecondary,
       ),
-      body:FavoriteList(favorite: []),
+      body:FavoriteList(),
     );
   }
 }

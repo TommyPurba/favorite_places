@@ -1,15 +1,23 @@
+
 import 'package:flutter/material.dart';
 
 class Placedetailscreen extends StatelessWidget {
-  const Placedetailscreen({super.key, required this.place});
-  final String place;
+  const Placedetailscreen({super.key, required this.title});
+  final String title;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(place),
+        title: Text(title,
+        overflow: TextOverflow.ellipsis,
+        maxLines: 1,),
       ),
-      body: Center(child: Text(place),),
+      body: Center(child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Text(title,
+        textAlign: TextAlign.center,
+        style: Theme.of(context).textTheme.titleLarge,),
+      ),),
     );
   }
 }

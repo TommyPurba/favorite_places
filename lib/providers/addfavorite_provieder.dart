@@ -6,11 +6,12 @@ class AddfavoriteNotifier extends StateNotifier<List<Favorite>> {
   AddfavoriteNotifier() : super([]);
 
   void addName(String name){
-    if(name.trim().isEmpty)return;
-    state =[...state,Favorite(title: name.trim())];
+    final n = name.trim();
+    if(n.isEmpty)return;
+    state =[...state,Favorite(title: n)];
   }
 }
 
-final adfavorite = StateNotifierProvider<AddfavoriteNotifier,List<Favorite>>((ref){
+final addfavorite = StateNotifierProvider<AddfavoriteNotifier,List<Favorite>>((ref){
   return AddfavoriteNotifier();
 });
