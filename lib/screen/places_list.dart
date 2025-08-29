@@ -1,5 +1,5 @@
 
-import 'package:favorite_places/screen/addnewplacescreen.dart';
+import 'package:favorite_places/screen/add_place.dart';
 import 'package:favorite_places/widgets/favorite_list.dart';
 import 'package:flutter/material.dart';
 
