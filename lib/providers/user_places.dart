@@ -11,4 +11,4 @@ class UserPlacesNotifier extends StateNotifier<List<Favorite>> {
   }
 }
 
-final addPlacesProvider = StateNotifierProvider((ref)=> UserPlacesNotifier(),);
+final userPlacesProvider = StateNotifierProvider<UserPlacesNotifier, List<Favorite>>((ref)=> UserPlacesNotifier(),);
