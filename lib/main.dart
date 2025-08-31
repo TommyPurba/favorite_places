@@ -1,5 +1,4 @@
 import 'package:favorite_places/screen/place.dart';
-import 'package:favorite_places/screens/yourfavorite_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
