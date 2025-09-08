@@ -1,6 +1,6 @@
-import 'package:favorite_places/models/place.dart';
+import 'package:favorite_places/models/places.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+//ini cara saya bantuan ai
 
 class AddfavoriteNotifier extends StateNotifier<List<Favorite>> {
   AddfavoriteNotifier() : super([]);
