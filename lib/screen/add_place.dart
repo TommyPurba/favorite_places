@@ -24,6 +24,29 @@ class _AddnewplacescreenState extends ConsumerState<AddPlaceScreen>{
   void _saveTitle(){
     final enteredTilte = _textControler.text;
     if(enteredTilte.isEmpty || _selectedImage == null || _selectLocation == null){
+      showDialog(
+  context: context,
+  builder: (ctx) {
+    return AlertDialog(
+      backgroundColor: Colors.amber[50], // ubah warna background di sini
+      title: const Text(
+        'Validation Error',
+        style: TextStyle(color: Colors.red), // ubah warna teks kalau mau
+      ),
+      content: const Text(
+        'Name still empty! Please fill it first.',
+        style: TextStyle(fontSize: 16),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(ctx).pop(),
+          child: const Text('OK'),
+        ),
+      ],
+    );
+  },
+);
+
       return;
     }
       ref.read(userPlacesProvider.notifier).addPlace(enteredTilte, _selectedImage!, _selectLocation!);
