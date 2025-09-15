@@ -1,9 +1,12 @@
+// ini code saya untuk location_input.dart
 
+import 'dart:convert'; // <-- tambah untuk decode JSON (reverse geocoding)
 import 'package:favorite_places/env.dart'; // <-- pastikan TANPA spasi ekstra
 import 'package:favorite_places/models/place.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 import 'package:http/http.dart' as http;
+import 'package:favorite_places/screen/maps.dart'; // <-- tambah import MapScreen
 
 class LocationInput extends StatefulWidget{
   const LocationInput({super.key, required this.onSelectLocation});
@@ -93,6 +96,57 @@ class _LocationInputState extends State<LocationInput>{
     widget.onSelectLocation(_pickLocation!);
   }
 
+  // ===== Tambahan: reverse geocoding LocationIQ untuk dapat alamat =====
+  Future<String> _reverseGeocode(double lat, double lng) async {
+    if (locationIqToken.isEmpty) return '';
+    final uri = Uri.https('us1.locationiq.com', '/v1/reverse', {
+      'key': locationIqToken,
+      'lat': '$lat',
+      'lon': '$lng',
+      'format': 'json',
+    });
+    try {
+      final resp = await http.get(uri);
+      if (resp.statusCode == 200) {
+        final data = json.decode(resp.body);
+        return (data['display_name'] as String?) ?? '';
+      }
+    } catch (e) {
+      debugPrint('Reverse geocode error: $e');
+    }
+    return '';
+  }
+  // ====================================================================
+
+  // ==== Tambahan: pilih lokasi manual di peta (MapScreen) ====
+  Future<void> _selectOnMap() async {
+    // buka full-screen map untuk memilih lokasi
+    final result = await Navigator.of(context).push<PlaceLocation>(
+      MaterialPageRoute(
+        builder: (_) => const MapScreen(isSelecting: true),
+      ),
+    );
+
+    // jika user batal
+    if (result == null) return;
+    if (!mounted) return;
+
+    // Ambil alamat dari LocationIQ (biar address tampil)
+    final addr = await _reverseGeocode(result.latitude, result.longitude);
+    final withAddr = PlaceLocation(
+      longitude: result.longitude,
+      latitude: result.latitude,
+      address: addr.isNotEmpty ? addr : result.address,
+    );
+
+    // simpan hasil & kabari parent (sesuai pola kamu)
+    setState(() {
+      _pickLocation = withAddr;
+    });
+    widget.onSelectLocation(withAddr);
+  }
+  // ===========================================================
+
   @override
   Widget build(BuildContext context) {
     Widget previewContent = Text(
@@ -132,6 +186,19 @@ class _LocationInputState extends State<LocationInput>{
           ),
           child: previewContent,
         ),
+
+        // ===== Tambahan: tampilkan alamat kalau ada =====
+        if ((_pickLocation?.address.isNotEmpty ?? false))
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: Text(
+              _pickLocation!.address,
+              style: const TextStyle(fontSize: 12),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        // =================================================
+
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -143,7 +210,7 @@ class _LocationInputState extends State<LocationInput>{
             TextButton.icon(
               icon: const Icon(Icons.map),
               label: const Text('Select On Map'),
-              onPressed: (){},
+              onPressed: _selectOnMap, // <-- panggil MapScreen
             ),
           ],
         )
