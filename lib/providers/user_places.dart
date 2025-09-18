@@ -26,9 +26,44 @@ class UserPlacesNotifier extends StateNotifier<List<Favorite>> {
     final db = await _getDatabase();
     final data = await db.query('user_places');
     final places = data.map(
-      (row)=> Favorite(id: row['id'] as String, title: row['title'] as String, image: File(row['image'] as String), location: PlaceLocation(longitude: row['lng'] as double, latitude: row['lat'] as double, address: row['address  '] as String))
+      (row)=> Favorite(id: row['id'] as String, title: row['title'] as String, image: File(row['image'] as String), location: PlaceLocation(longitude: row['lng'] as double, latitude: row['lat'] as double, address: row['address'] as String))
     ).toList();
     state = places ;
+   }
+
+   Future<void> deletePlace(String id) async{
+    final db = await _getDatabase();
+
+    //ambil path image agr bisa dihapus dari storage
+    final rows = await db.query(
+      'user_places',
+      where: 'id = ?',
+      whereArgs: [id],
+      limit: 1,
+    );
+
+    if (rows.isNotEmpty){
+      final imagePath = rows.first['image'] as String?;
+      if(imagePath !=null){
+        final file = File(imagePath);
+        if(await file.exists()){
+          try {
+            await file.delete();
+          } catch (_) {
+            
+          }
+        }
+      }
+    }
+    //hapus dari database
+    await db.delete(
+      'user_places',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+
+    // sinkronkan state riverpod
+    state = state.where((p)=> p.id != id).toList();
    }
 
   void addPlace(String title, File image, PlaceLocation location) async{
@@ -50,5 +85,7 @@ class UserPlacesNotifier extends StateNotifier<List<Favorite>> {
     state = [newPlaces, ...state];
   }
 }
+
+
 
 final userPlacesProvider = StateNotifierProvider<UserPlacesNotifier, List<Favorite>>((ref)=> UserPlacesNotifier(),);
